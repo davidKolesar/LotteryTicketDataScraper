@@ -18,20 +18,20 @@ public class DataRetrievalService {
 
 	/**
 	 * Scrapes table from website to get data and concatenates string to present to
-	 * the user
+	 * the user.
 	 */
 	public void scrapePage() {
 
-		// Attemtping to connect to page
+		// Attempting to connect to page
 		Document document = null;
 		try {
-			LOGGER.log( Level.FINE, "Attempting to connect to PA Lottery page");
+			LOGGER.log(Level.FINE, "Attempting to connect to PA Lottery page");
 			document = Jsoup
 					.connect(
 							"https://www.palottery.state.pa.us/scratch-offs/Print-Scratch-Offs.aspx?gametype=Remaining")
 					.get();
 		} catch (IOException e) {
-			 LOGGER.log( Level.SEVERE, e.toString(), "Unable to connect to lottery page." );
+			LOGGER.log(Level.SEVERE, e.toString(), "Unable to connect to lottery page.");
 		}
 		System.out.println(document.title());
 
@@ -39,26 +39,22 @@ public class DataRetrievalService {
 		Iterator<Element> iterator = table.select("td").iterator();
 		while (iterator.hasNext()) {
 
-			System.out.println("");
-			System.out.println("Game # " + gameCount);
-			System.out.println("");
+			//checks if new ticket is being evaluated
+			if (iteration == 1) {
+				System.out.println("");
+				System.out.println("Game # : " + gameCount);
+				System.out.println("");
+			}
 
 			setHeader(iteration);
 			System.out.println(textHeader + " : " + iterator.next().text());
 			iteration = iteration += 1;
-			setHeader(iteration);
-			System.out.println(textHeader + " : " + iterator.next().text());
-			iteration = iteration += 1;
-			setHeader(iteration);
-			System.out.println(textHeader + " : " + iterator.next().text());
-			iteration = iteration += 1;
-			setHeader(iteration);
-			System.out.println(textHeader + " : " + iterator.next().text());
-			iteration = iteration += 1;
-			setHeader(iteration);
-			System.out.println(textHeader + " : " + iterator.next().text());
-			iteration = 1;
-			gameCount++;
+
+			//checks if this is last cell for ticket
+			if (iteration == 5) {
+				gameCount++;
+				iteration = 1;
+			}
 		}
 	}
 
@@ -81,6 +77,10 @@ public class DataRetrievalService {
 			textHeader = "WINNERS REMAINING";
 			break;
 		}
+	}
+
+	private void convertToData(int iteration, String tableData) {
+
 	}
 
 }

@@ -43,6 +43,7 @@ public class DataRetrievalService {
 			setHeader(iteration);
 			System.out.println(textHeader + " : " + iterator.next().text());
 			iteration = 1;
+			gameCount++;
 		}
 	}
 

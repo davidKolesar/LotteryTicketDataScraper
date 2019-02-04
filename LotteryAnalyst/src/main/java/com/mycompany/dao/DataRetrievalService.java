@@ -12,15 +12,23 @@ public class DataRetrievalService {
 	int iteration = 1;
 	String textHeader = "";
 
-	public void scrapePage() throws IOException {
+	/**
+	 * Scrapes table from website to get data and concatenates string to present to the user
+	 */
+	public void scrapePage() {
 
-		// connect to page
-		Document doc = Jsoup
-				.connect("https://www.palottery.state.pa.us/scratch-offs/Print-Scratch-Offs.aspx?gametype=Remaining")
-				.get();
-		System.out.println(doc.title());
+		// Attemtping to connect to page
+		Document document = null;
+		try {
+			document = Jsoup
+					.connect("https://www.palottery.state.pa.us/scratch-offs/Print-Scratch-Offs.aspx?gametype=Remaining")
+					.get();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		System.out.println(document.title());
 
-		Element table = doc.select("table").first();
+		Element table = document.select("table").first();
 		Iterator<Element> iterator = table.select("td").iterator();
 		while (iterator.hasNext()) {
 			

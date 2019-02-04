@@ -1,6 +1,7 @@
 package com.mycompany.dao;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -9,12 +10,15 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
+import com.mycompany.dto.LotteryTicket;
+
 public class DataRetrievalService {
 	private static final Logger LOGGER = Logger.getLogger(DataRetrievalService.class.getName());
 
 	int gameCount = 1;
 	int iteration = 1;
 	String textHeader = "";
+	LotteryTicket ticket = new LotteryTicket();
 
 	/**
 	 * Scrapes table from website to get data and concatenates string to present to
@@ -39,7 +43,7 @@ public class DataRetrievalService {
 		Iterator<Element> iterator = table.select("td").iterator();
 		while (iterator.hasNext()) {
 
-			//checks if new ticket is being evaluated
+			// checks if new ticket is being evaluated
 			if (iteration == 1) {
 				System.out.println("");
 				System.out.println("Game # : " + gameCount);
@@ -50,7 +54,7 @@ public class DataRetrievalService {
 			System.out.println(textHeader + " : " + iterator.next().text());
 			iteration = iteration += 1;
 
-			//checks if this is last cell for ticket
+			// checks if this is last cell for ticket
 			if (iteration == 6) {
 				gameCount++;
 				iteration = 1;
@@ -82,12 +86,19 @@ public class DataRetrievalService {
 	private void convertToData(int iteration, String tableData) {
 
 		String[] splitTableData = tableData.split("\\s+");
+		HashMap<Integer, Integer> prizesToAvailabilities = new HashMap<Integer, Integer>(); 
 		
-		for(String td : splitTableData) {
-		    Integer value = Integer.parseInt(td); 
+			for (String td : splitTableData) {
+				Integer value = Integer.parseInt(td);
+			}
+
+		
+		if (iteration == 5 ) {
+			
 		}
 		
 		
+
 	}
 
 }

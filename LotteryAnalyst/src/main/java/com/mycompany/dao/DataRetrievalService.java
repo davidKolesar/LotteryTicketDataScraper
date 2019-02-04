@@ -51,7 +51,7 @@ public class DataRetrievalService {
 			iteration = iteration += 1;
 
 			//checks if this is last cell for ticket
-			if (iteration == 5) {
+			if (iteration == 6) {
 				gameCount++;
 				iteration = 1;
 			}
@@ -81,6 +81,13 @@ public class DataRetrievalService {
 
 	private void convertToData(int iteration, String tableData) {
 
+		String[] splitTableData = tableData.split("\\s+");
+		
+		for(String td : splitTableData) {
+		    Integer value = Integer.parseInt(td); 
+		}
+		
+		
 	}
 
 }

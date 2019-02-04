@@ -9,6 +9,9 @@ This program scrapes metadata publicly provided from the Pennsylvania Lottery we
 --Amount of prize monies for each ticket
 
 
+-- Price for each ticket
+
+
 --Amount of winners claimed 
 
 

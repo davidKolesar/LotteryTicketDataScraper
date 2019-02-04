@@ -19,6 +19,7 @@ public class DataRetrievalService {
 	int iteration = 1;
 	String textHeader = "";
 	LotteryTicket ticket = new LotteryTicket();
+	String[] remainingPrizesForTicket;
 
 	/**
 	 * Scrapes table from website to get data and concatenates string to present to
@@ -43,15 +44,16 @@ public class DataRetrievalService {
 		Iterator<Element> iterator = table.select("td").iterator();
 		while (iterator.hasNext()) {
 
-			// checks if new ticket is being evaluated
+			// temporary console view checks if new ticket is being evaluated
 			if (iteration == 1) {
 				System.out.println("");
 				System.out.println("Game # : " + gameCount);
 				System.out.println("");
 			}
-
+			
 			setHeader(iteration);
 			System.out.println(textHeader + " : " + iterator.next().text());
+			setTicketDataFromTable(iteration, iterator.next().text()); 
 			iteration = iteration += 1;
 
 			// checks if this is last cell for ticket
@@ -83,22 +85,34 @@ public class DataRetrievalService {
 		}
 	}
 
-	private void convertToData(int iteration, String tableData) {
-
-		String[] splitTableData = tableData.split("\\s+");
-		HashMap<Integer, Integer> prizesToAvailabilities = new HashMap<Integer, Integer>(); 
-		
-			for (String td : splitTableData) {
-				Integer value = Integer.parseInt(td);
-			}
-
-		
-		if (iteration == 5 ) {
+	private void setTicketDataFromTable(int iteration, String tableData) {
+	
+		switch (iteration) {
+		case 1:
+			ticket.setNumber(tableData);
+			break;
+		case 2:
+			ticket.setName(tableData);
+			break;
+		case 3:
+                                      
+			break;
+		case 4:
+			remainingPrizesForTicket = tableData.split("\\s+");
+			break;
+		case 5:
+			HashMap<Integer, Integer> prizesToAvailabilities = new HashMap<Integer, Integer>(); 
+			String [] remainingWinnersPerPrize = tableData.split("\\s+");
 			
+			for(int i = 0; i < remainingPrizesForTicket.length; i++) {
+				
+				Integer remainingPrizeForTicket = Integer.valueOf(remainingWinnersPerPrize[i]);
+				Integer remainingWinners = Integer.valueOf(remainingWinnersPerPrize[i]);
+				prizesToAvailabilities.put(remainingPrizeForTicket, remainingWinners);
+			}
+			ticket.setPrizesToAvailabilities(prizesToAvailabilities);
+			break;
 		}
-		
-		
-
 	}
-
+	
 }

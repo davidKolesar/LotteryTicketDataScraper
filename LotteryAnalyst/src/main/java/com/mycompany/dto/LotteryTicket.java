@@ -1,25 +1,26 @@
 package com.mycompany.dto;
 
 import java.util.HashMap;
+import java.util.UUID;
 
 public class LotteryTicket {
 
-	public int id;
-	public int number;
+	public UUID id = java.util.UUID.randomUUID();
+	public String number;
 	public int cost;
 	public String name;
 	public HashMap<Integer, Integer> prizesToAvailabilities = new HashMap<Integer, Integer>(); 
 	
-	public int getId() {
+	
+	
+	public UUID getId() {
 		return id;
 	}
-	public void setId(int id) {
-		this.id = id;
-	}
-	public int getNumber() {
+	
+	public String getNumber() {
 		return number;
 	}
-	public void setNumber(int number) {
+	public void setNumber(String number) {
 		this.number = number;
 	}
 	public int getCost() {

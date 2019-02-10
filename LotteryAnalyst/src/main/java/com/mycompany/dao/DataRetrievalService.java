@@ -1,10 +1,10 @@
 package com.mycompany.dao;
 
 import java.io.IOException;
-import java.text.NumberFormat;
-import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -13,6 +13,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
 import com.mycompany.dto.LotteryTicket;
+import com.mycompany.microservice.DataConversionService;
 
 public class DataRetrievalService {
 	private static final Logger LOGGER = Logger.getLogger(DataRetrievalService.class.getName());
@@ -22,6 +23,7 @@ public class DataRetrievalService {
 	LotteryTicket ticket = new LotteryTicket();
 	String textHeader = "";
 	String[] remainingPrizesForTicket;
+	List<LotteryTicket> allScratchOffTickets = new ArrayList<>();
 
 	/**
 	 * Scrapes table from website to get data and concatenates string to present to
@@ -67,6 +69,8 @@ public class DataRetrievalService {
 			if (iteration == 6) {
 				gameCount++;
 				iteration = 1;
+				allScratchOffTickets.add(ticket);
+				ticket = new LotteryTicket();
 			}
 		}
 	}
@@ -93,6 +97,7 @@ public class DataRetrievalService {
 	}
 
 	private void setTicketDataFromTable(int iteration, String tableData) {
+		DataConversionService dataConversionService = new DataConversionService();
 
 		switch (iteration) {
 		case 1:
@@ -102,24 +107,24 @@ public class DataRetrievalService {
 			ticket.setName(tableData);
 			break;
 		case 3:
-			ticket.setCost(convertTableDataToMoney(tableData));
+			ticket.setCost(dataConversionService.convertTableDataToMoney(tableData));
 			break;
 		case 4:
-			remainingPrizesForTicket = removeSpacesFromTableData(tableData);
+			remainingPrizesForTicket = dataConversionService.removeSpacesFromTableData(tableData);
 			break;
 		case 5:
 			HashMap<Integer, Integer> prizesToAvailabilities = new HashMap<Integer, Integer>();
-			String[] remainingWinnersPerPrize = removeSpacesFromTableData(tableData);
+			String[] remainingWinnersPerPrize = dataConversionService.removeSpacesFromTableData(tableData);
 
 			for (int i = 0; i < remainingPrizesForTicket.length; i++) {
 				Integer remainingPrizeForTicket = 606060606;
 
 				// TODO ensure casing is controlled for with this method
 				if (!remainingPrizesForTicket[i].startsWith("FREE")) {
-					remainingPrizeForTicket = convertTableDataToMoney(remainingPrizesForTicket[i]);
+					remainingPrizeForTicket = dataConversionService.convertTableDataToMoney(remainingPrizesForTicket[i]);
 				}
 
-				Integer remainingWinners = removeCommasFromTableData(remainingWinnersPerPrize[i]);
+				Integer remainingWinners = dataConversionService.removeCommasFromTableData(remainingWinnersPerPrize[i]);
 				prizesToAvailabilities.put(remainingPrizeForTicket, remainingWinners);
 			}
 			ticket.setPrizesToAvailabilities(prizesToAvailabilities);
@@ -127,33 +132,4 @@ public class DataRetrievalService {
 		}
 	}
 
-	private Integer convertTableDataToMoney(String tableData) {
-		NumberFormat format = NumberFormat.getCurrencyInstance();
-		Number cost = null;
-
-		try {
-			cost = format.parse(tableData);
-		} catch (ParseException e) {
-			LOGGER.log(Level.SEVERE, e.toString(),
-					"Unable to parse dataTable to currency. Check if source table data was updated.");
-		}
-		return cost.intValue();
-	}
-
-	private String[] removeSpacesFromTableData(String tableData) {
-		if (tableData.contains("FREE")) {
-			String tableDataSansfreeTicket = tableData.substring(0, tableData.lastIndexOf("FREE"));
-			String completeTableData = tableDataSansfreeTicket + " FREE";
-			String[] separatedTableData = completeTableData.split("\\s+");
-			return separatedTableData;
-
-		}
-		return tableData.split("\\s+");
-	}
-
-	private Integer removeCommasFromTableData(String tableData) {
-		String amount = tableData.replace(",", "");
-
-		return Integer.valueOf(amount);
-	}
 }

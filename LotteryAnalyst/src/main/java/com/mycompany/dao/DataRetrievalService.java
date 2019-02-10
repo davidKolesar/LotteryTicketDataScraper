@@ -16,6 +16,7 @@ import com.mycompany.dto.LotteryTicket;
 
 public class DataRetrievalService {
 	private static final Logger LOGGER = Logger.getLogger(DataRetrievalService.class.getName());
+	
 
 	int gameCount = 1;
 	int iteration = 1;
@@ -112,9 +113,13 @@ public class DataRetrievalService {
 			String[] remainingWinnersPerPrize = removeSpacesFromTableData(tableData);
 
 			for (int i = 0; i < remainingPrizesForTicket.length; i++) {
+				Integer remainingPrizeForTicket = 606060606;
 
-				Integer remainingPrizeForTicket = convertTableDataToMoney(remainingWinnersPerPrize[i]);
-				Integer remainingWinners = removeCommasFromTableData(remainingPrizesForTicket[i]);
+				if(!remainingPrizesForTicket[i].equals("FREE")) {
+					remainingPrizeForTicket = convertTableDataToMoney(remainingPrizesForTicket[i]);
+				}
+				
+				Integer remainingWinners = removeCommasFromTableData(remainingWinnersPerPrize[i]);
 				prizesToAvailabilities.put(remainingPrizeForTicket, remainingWinners);
 			}
 			ticket.setPrizesToAvailabilities(prizesToAvailabilities);
@@ -122,13 +127,14 @@ public class DataRetrievalService {
 		}
 	}
 
-	private int convertTableDataToMoney(String tableData) {
+	private Integer convertTableDataToMoney(String tableData) {
 		NumberFormat format = NumberFormat.getCurrencyInstance();
 		Number cost = null;
+		
 		try {
 			cost = format.parse(tableData);
 		} catch (ParseException e) {
-			LOGGER.log(Level.SEVERE, e.toString(), "Unable to parse dataTable to currency. Check if table was updated.");
+			LOGGER.log(Level.SEVERE, e.toString(), "Unable to parse dataTable to currency. Check if source table data was updated.");
 		}
 		return  cost.intValue();
 	}
@@ -138,7 +144,8 @@ public class DataRetrievalService {
 	}
 
 	private Integer removeCommasFromTableData(String tableData) {
-		String amount = tableData.replace( ',', ' ' ); 
+		String amount = tableData.replace( ",", "" ); 
+		
 		return Integer.valueOf(amount);
 	}
 	

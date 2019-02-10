@@ -16,7 +16,6 @@ import com.mycompany.dto.LotteryTicket;
 
 public class DataRetrievalService {
 	private static final Logger LOGGER = Logger.getLogger(DataRetrievalService.class.getName());
-	
 
 	int gameCount = 1;
 	int iteration = 1;
@@ -115,10 +114,11 @@ public class DataRetrievalService {
 			for (int i = 0; i < remainingPrizesForTicket.length; i++) {
 				Integer remainingPrizeForTicket = 606060606;
 
-				if(!remainingPrizesForTicket[i].equals("FREE")) {
+				// TODO ensure casing is controlled for with this method
+				if (!remainingPrizesForTicket[i].startsWith("FREE")) {
 					remainingPrizeForTicket = convertTableDataToMoney(remainingPrizesForTicket[i]);
 				}
-				
+
 				Integer remainingWinners = removeCommasFromTableData(remainingWinnersPerPrize[i]);
 				prizesToAvailabilities.put(remainingPrizeForTicket, remainingWinners);
 			}
@@ -130,24 +130,30 @@ public class DataRetrievalService {
 	private Integer convertTableDataToMoney(String tableData) {
 		NumberFormat format = NumberFormat.getCurrencyInstance();
 		Number cost = null;
-		
+
 		try {
 			cost = format.parse(tableData);
 		} catch (ParseException e) {
-			LOGGER.log(Level.SEVERE, e.toString(), "Unable to parse dataTable to currency. Check if source table data was updated.");
+			LOGGER.log(Level.SEVERE, e.toString(),
+					"Unable to parse dataTable to currency. Check if source table data was updated.");
 		}
-		return  cost.intValue();
+		return cost.intValue();
 	}
 
 	private String[] removeSpacesFromTableData(String tableData) {
+		if (tableData.contains("FREE")) {
+			String tableDataSansfreeTicket = tableData.substring(0, tableData.lastIndexOf("FREE"));
+			String completeTableData = tableDataSansfreeTicket + " FREE";
+			String[] separatedTableData = completeTableData.split("\\s+");
+			return separatedTableData;
+
+		}
 		return tableData.split("\\s+");
 	}
 
 	private Integer removeCommasFromTableData(String tableData) {
-		String amount = tableData.replace( ",", "" ); 
-		
+		String amount = tableData.replace(",", "");
+
 		return Integer.valueOf(amount);
 	}
-	
-	
 }

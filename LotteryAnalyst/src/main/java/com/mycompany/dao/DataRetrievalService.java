@@ -46,7 +46,7 @@ public class DataRetrievalService {
 		} catch (IOException e) {
 			LOGGER.log(Level.SEVERE, e.toString(), "Unable to connect to lottery database.");
 		}
-		System.out.println(document.title());
+	//	System.out.println(document.title());
 
 		Element table = document.select("table").first();
 		Iterator<Element> iterator = table.select("td").iterator();
@@ -56,13 +56,13 @@ public class DataRetrievalService {
 
 			// temporary console view checks if new ticket is being evaluated
 			if (iteration == 1) {
-				System.out.println("");
-				System.out.println("Game # : " + gameCount);
-				System.out.println("");
-			}
+				/*
+				 * System.out.println(""); System.out.println("Game # : " + gameCount);
+				 * System.out.println("");
+				 */	}
 
 			setHeader(iteration);
-			System.out.println(textHeader + " : " + tableData);
+			//System.out.println(textHeader + " : " + tableData);
 
 			setTicketDataFromTable(iteration, tableData);
 
@@ -135,6 +135,9 @@ public class DataRetrievalService {
 			ticket.setPrizesToAvailabilities(prizesToAvailabilities);
 			break;
 		}
+	}
+	public List<LotteryTicket> returnAllTickets () {
+		return allScratchOffTickets;
 	}
 
 }

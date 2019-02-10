@@ -1,11 +1,11 @@
 package app;
 
-import com.mycompany.dao.DataRetrievalService;
+import com.mycompany.controller.ApplicationLaunchController;
 
 public class Run {
 
 	public static void main(String args[]) {
-		DataRetrievalService dataRetrievalService = new DataRetrievalService();
-		dataRetrievalService.scrapePage();
+		ApplicationLaunchController launchController = new ApplicationLaunchController();
+		launchController.launch();
 	}
 }

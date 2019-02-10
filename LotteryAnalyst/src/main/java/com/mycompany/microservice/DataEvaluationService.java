@@ -18,7 +18,7 @@ public class DataEvaluationService {
 	 * @param amountToEvaluate -- The amount of tickets to evaluate
 	 * @return -- Top n Tickets with highest prize amounts.
 	 */
-	public ArrayList<LotteryTicket> findHighestPrizesAvailable(ArrayList<LotteryTicket> allScratchOffTickets, int amountToEvaluate) {
+	public List<LotteryTicket> findHighestPrizesAvailable(List<LotteryTicket> allScratchOffTickets, int amountToEvaluate) {
 		List<LotteryTicket> topPrizedTickets = new ArrayList<>();
 		Integer highestPrizeAmount = 0;
 
@@ -48,9 +48,9 @@ public class DataEvaluationService {
 		allScratchOffTickets.sort(Comparator.comparing(LotteryTicket::getCost));
 
 		// getting top specified amount
-		allScratchOffTickets.subList(allScratchOffTickets.size() -amountToEvaluate, allScratchOffTickets.size());
+		List<LotteryTicket> topTickets = allScratchOffTickets.subList(allScratchOffTickets.size() -amountToEvaluate, allScratchOffTickets.size());
 		
-		return allScratchOffTickets;
+		return topTickets;
 		
 	}
 

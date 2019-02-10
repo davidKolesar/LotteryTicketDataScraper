@@ -15,6 +15,10 @@ import org.jsoup.nodes.Element;
 import com.mycompany.dto.LotteryTicket;
 import com.mycompany.microservice.DataConversionService;
 
+/**
+ * @author cthulu
+ *
+ */
 public class DataRetrievalService {
 	private static final Logger LOGGER = Logger.getLogger(DataRetrievalService.class.getName());
 
@@ -121,7 +125,8 @@ public class DataRetrievalService {
 
 				// TODO ensure casing is controlled for with this method
 				if (!remainingPrizesForTicket[i].startsWith("FREE")) {
-					remainingPrizeForTicket = dataConversionService.convertTableDataToMoney(remainingPrizesForTicket[i]);
+					remainingPrizeForTicket = dataConversionService
+							.convertTableDataToMoney(remainingPrizesForTicket[i]);
 				}
 
 				Integer remainingWinners = dataConversionService.removeCommasFromTableData(remainingWinnersPerPrize[i]);

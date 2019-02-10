@@ -1,6 +1,7 @@
 package com.mycompany.dto;
 
 import java.util.HashMap;
+import java.util.Set;
 import java.util.UUID;
 
 public class LotteryTicket {
@@ -38,6 +39,10 @@ public class LotteryTicket {
 	}
 	public void setPrizesToAvailabilities(HashMap<Integer, Integer> prizesToAvailabilities) {
 		this.prizesToAvailabilities = prizesToAvailabilities;
+	}
+	
+	public Set<Integer> getAllPrizes() {
+		return getPrizesToAvailabilities().keySet();
 	}
 	
 }

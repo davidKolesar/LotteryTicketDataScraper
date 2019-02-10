@@ -1,6 +1,8 @@
 package com.mycompany.dao;
 
 import java.io.IOException;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.logging.Level;
@@ -44,16 +46,21 @@ public class DataRetrievalService {
 		Iterator<Element> iterator = table.select("td").iterator();
 		while (iterator.hasNext()) {
 
+			String tableData = iterator.next().text();
+
 			// temporary console view checks if new ticket is being evaluated
 			if (iteration == 1) {
 				System.out.println("");
 				System.out.println("Game # : " + gameCount);
 				System.out.println("");
 			}
-			
+
 			setHeader(iteration);
-			System.out.println(textHeader + " : " + iterator.next().text());
-			//setTicketDataFromTable(iteration, iterator.next().text()); 
+			System.out.println(textHeader + " : " + tableData);
+
+			setTicketDataFromTable(iteration, tableData);
+
+			// setTicketDataFromTable(iteration, iterator.next().text());
 			iteration = iteration += 1;
 
 			// checks if this is last cell for ticket
@@ -86,7 +93,7 @@ public class DataRetrievalService {
 	}
 
 	private void setTicketDataFromTable(int iteration, String tableData) {
-	
+
 		switch (iteration) {
 		case 1:
 			ticket.setNumber(tableData);
@@ -95,25 +102,45 @@ public class DataRetrievalService {
 			ticket.setName(tableData);
 			break;
 		case 3:
-			String cost = (tableData.replace("$", ""));
-            ticket.setCost(Integer.valueOf(cost));              
+			ticket.setCost(convertTableDataToMoney(tableData));
 			break;
 		case 4:
-			remainingPrizesForTicket = tableData.split("\\s+");
+			remainingPrizesForTicket = removeSpacesFromTableData(tableData);
 			break;
 		case 5:
-			HashMap<Integer, Integer> prizesToAvailabilities = new HashMap<Integer, Integer>(); 
-			String [] remainingWinnersPerPrize = tableData.split("\\s+");
-			
-			for(int i = 0; i < remainingPrizesForTicket.length; i++) {
-				
-				Integer remainingPrizeForTicket = Integer.valueOf(remainingWinnersPerPrize[i]);
-				Integer remainingWinners = Integer.valueOf(remainingWinnersPerPrize[i]);
+			HashMap<Integer, Integer> prizesToAvailabilities = new HashMap<Integer, Integer>();
+			String[] remainingWinnersPerPrize = removeSpacesFromTableData(tableData);
+
+			for (int i = 0; i < remainingPrizesForTicket.length; i++) {
+
+				Integer remainingPrizeForTicket = convertTableDataToMoney(remainingWinnersPerPrize[i]);
+				Integer remainingWinners = removeCommasFromTableData(remainingPrizesForTicket[i]);
 				prizesToAvailabilities.put(remainingPrizeForTicket, remainingWinners);
 			}
 			ticket.setPrizesToAvailabilities(prizesToAvailabilities);
 			break;
 		}
 	}
+
+	private int convertTableDataToMoney(String tableData) {
+		NumberFormat format = NumberFormat.getCurrencyInstance();
+		Number cost = null;
+		try {
+			cost = format.parse(tableData);
+		} catch (ParseException e) {
+			LOGGER.log(Level.SEVERE, e.toString(), "Unable to parse dataTable to currency. Check if table was updated.");
+		}
+		return  cost.intValue();
+	}
+
+	private String[] removeSpacesFromTableData(String tableData) {
+		return tableData.split("\\s+");
+	}
+
+	private Integer removeCommasFromTableData(String tableData) {
+		String amount = tableData.replace( ',', ' ' ); 
+		return Integer.valueOf(amount);
+	}
+	
 	
 }

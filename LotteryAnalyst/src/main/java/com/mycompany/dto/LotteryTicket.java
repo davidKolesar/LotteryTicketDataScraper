@@ -11,8 +11,6 @@ public class LotteryTicket {
 	public String name;
 	public HashMap<Integer, Integer> prizesToAvailabilities = new HashMap<Integer, Integer>(); 
 	
-	
-	
 	public UUID getId() {
 		return id;
 	}

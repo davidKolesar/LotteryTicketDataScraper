@@ -17,8 +17,8 @@ public class DataRetrievalService {
 
 	int gameCount = 1;
 	int iteration = 1;
-	String textHeader = "";
 	LotteryTicket ticket = new LotteryTicket();
+	String textHeader = "";
 	String[] remainingPrizesForTicket;
 
 	/**
@@ -36,7 +36,7 @@ public class DataRetrievalService {
 							"https://www.palottery.state.pa.us/scratch-offs/Print-Scratch-Offs.aspx?gametype=Remaining")
 					.get();
 		} catch (IOException e) {
-			LOGGER.log(Level.SEVERE, e.toString(), "Unable to connect to lottery page.");
+			LOGGER.log(Level.SEVERE, e.toString(), "Unable to connect to lottery database.");
 		}
 		System.out.println(document.title());
 
@@ -53,7 +53,7 @@ public class DataRetrievalService {
 			
 			setHeader(iteration);
 			System.out.println(textHeader + " : " + iterator.next().text());
-			setTicketDataFromTable(iteration, iterator.next().text()); 
+			//setTicketDataFromTable(iteration, iterator.next().text()); 
 			iteration = iteration += 1;
 
 			// checks if this is last cell for ticket
@@ -95,7 +95,8 @@ public class DataRetrievalService {
 			ticket.setName(tableData);
 			break;
 		case 3:
-                                      
+			String cost = (tableData.replace("$", ""));
+            ticket.setCost(Integer.valueOf(cost));              
 			break;
 		case 4:
 			remainingPrizesForTicket = tableData.split("\\s+");

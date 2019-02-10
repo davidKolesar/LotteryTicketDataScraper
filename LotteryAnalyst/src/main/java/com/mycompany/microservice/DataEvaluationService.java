@@ -1,6 +1,7 @@
 package com.mycompany.microservice;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -10,8 +11,14 @@ import com.mycompany.dto.LotteryTicket;
 public class DataEvaluationService {
 	List<LotteryTicket> allScratchOffTickets = new ArrayList<>();
 
-	public ArrayList<LotteryTicket> findHighestPrizesAvailable(ArrayList<LotteryTicket> allScratchOffTickets,
-			int amountToEvaluate) {
+	/**
+	 * Goes through all tickets passed in as an argument and returns the top available prizes for n tickets. 
+	 * 
+	 * @param allScratchOffTickets -- List of all tickets to evaluate (should be all tickets in the game)
+	 * @param amountToEvaluate -- The amount of tickets to evaluate
+	 * @return -- Top n Tickets with highest prize amounts.
+	 */
+	public ArrayList<LotteryTicket> findHighestPrizesAvailable(ArrayList<LotteryTicket> allScratchOffTickets, int amountToEvaluate) {
 		List<LotteryTicket> topPrizedTickets = new ArrayList<>();
 		Integer highestPrizeAmount = 0;
 
@@ -23,23 +30,28 @@ public class DataEvaluationService {
 
 			// evaluate if prizes are greater than current top prize
 			for (Integer prizeAmount : prizeAmounts) {
-				
+
 				if (highestPrizeAmount < prizeAmount || highestPrizeAmount == prizeAmount) {
-				
-					// if so, check if tickets are available
+
+					// if greater than current top prize, check if winners are available
 					HashMap<Integer, Integer> prizesToAvailabities = ticket.getPrizesToAvailabilities();
+
 					// if at least one is available, set as the new top prize
-					
 					if (prizesToAvailabities.get(prizeAmount) > 0) {
 						topPrizedTickets.add(ticket);
 					}
 				}
-
 			}
-
 		}
-		return null;
 
+		// sort from least to greatest
+		allScratchOffTickets.sort(Comparator.comparing(LotteryTicket::getCost));
+
+		// getting top specified amount
+		allScratchOffTickets.subList(allScratchOffTickets.size() -amountToEvaluate, allScratchOffTickets.size());
+		
+		return allScratchOffTickets;
+		
 	}
 
 	// Most possible winners

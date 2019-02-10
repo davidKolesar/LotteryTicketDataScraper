@@ -9,8 +9,6 @@ import java.util.Set;
 import com.mycompany.dto.LotteryTicket;
 
 public class DataEvaluationService {
-	List<LotteryTicket> allScratchOffTickets = new ArrayList<>();
-
 	/**
 	 * Goes through all tickets passed in as an argument and returns the top available prizes for n tickets. 
 	 * 
@@ -43,15 +41,12 @@ public class DataEvaluationService {
 				}
 			}
 		}
-
-		// sort from least to greatest
+		
+		// getting top tickets from amountToEvaluate
 		allScratchOffTickets.sort(Comparator.comparing(LotteryTicket::getCost));
-
-		// getting top specified amount
 		List<LotteryTicket> topTickets = allScratchOffTickets.subList(allScratchOffTickets.size() -amountToEvaluate, allScratchOffTickets.size());
 		
 		return topTickets;
-		
 	}
 
 	// Most possible winners

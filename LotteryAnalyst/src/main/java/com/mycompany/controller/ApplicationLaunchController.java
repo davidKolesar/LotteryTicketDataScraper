@@ -22,13 +22,13 @@ public class ApplicationLaunchController {
 		List<LotteryTicket> topTen = dataEvaluationService.findHighestPrizesAvailable(allScratchOffTickets, 10);
 
 		System.out.println("TOP TEN TICKETS");
-		int i = 0;
+		int i = 1;
 		for(LotteryTicket ticket : topTen) {
 			System.out.println();
 			System.out.println("GAME " + i);
 			System.out.println();
 			System.out.println(ticket.getName());
-			System.out.println(ticket.getCost());
+			System.out.println("This ticket costs $" + ticket.getCost());
 			System.out.println(ticket.getAllPrizes());
 			i++;
 			

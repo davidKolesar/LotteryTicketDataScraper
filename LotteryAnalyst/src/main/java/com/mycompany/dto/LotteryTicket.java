@@ -44,5 +44,17 @@ public class LotteryTicket {
 	public Set<Integer> getAllPrizes() {
 		return getPrizesToAvailabilities().keySet();
 	}
+
+	public Set<Integer> getAllWinnersAvailable() {
+		Set<Integer> keys = getPrizesToAvailabilities().keySet();
+		Integer totalAvailable = 0;
+		
+		for(Integer key : keys) {
+		 Integer amountAvailable = prizesToAvailabilities.get(key);
+		 totalAvailable = amountAvailable + totalAvailable;
+		}
+		return totalAvailable;
+		
+	}
 	
 }

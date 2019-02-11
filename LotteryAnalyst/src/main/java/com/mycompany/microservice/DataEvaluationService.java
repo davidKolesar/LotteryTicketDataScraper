@@ -18,8 +18,7 @@ public class DataEvaluationService {
 	 * @param amountToEvaluate     -- The amount of tickets to evaluate
 	 * @return -- Top n Tickets with highest prize amounts.
 	 */
-	public List<LotteryTicket> findHighestPrizesAvailable(List<LotteryTicket> allScratchOffTickets,
-			int amountToEvaluate) {
+	public List<LotteryTicket> findHighestPrizesAvailable(List<LotteryTicket> allScratchOffTickets, int amountToEvaluate) {
 		List<LotteryTicket> topPrizedTickets = new ArrayList<>();
 		Integer highestPrizeAmount = 0;
 
@@ -39,6 +38,7 @@ public class DataEvaluationService {
 
 					// if at least one is available, set as the new top prize
 					if (prizesToAvailabities.get(prizeAmount) > 0) {
+						ticket.setHighestAvailablePrize(prizeAmount);
 						topPrizedTickets.add(ticket);
 					}
 				}
@@ -46,48 +46,33 @@ public class DataEvaluationService {
 		}
 
 		// getting top tickets from amountToEvaluate
-		allScratchOffTickets.sort(Comparator.comparing(LotteryTicket::getCost));
+		topPrizedTickets.sort(Comparator.comparing(LotteryTicket::getHighestAvailablePrize));
 		List<LotteryTicket> topTickets = allScratchOffTickets.subList(allScratchOffTickets.size() - amountToEvaluate,
 				allScratchOffTickets.size());
 
 		return topTickets;
 	}
 
-	public List<LotteryTicket> findHighestAmountOfWinnersAvailable(List<LotteryTicket> allScratchOffTickets, int amountToEvaluate) {
-		List<LotteryTicket> highestAmountOfWinnersAvailable = new ArrayList<>();
-		Integer highestWinnersAmount = 0;
-
-		
-				// iterate through all tickets
-				for (LotteryTicket ticket : allScratchOffTickets) {
-
-					// For each ticket, find all available
-					Set<Integer> prizeAmounts = ticket.getAllPrizes();
-
-					// evaluate if prizes are greater than current top prize
-					for (Integer prizeAmount : prizeAmounts) {
-
-						if (highestPrizeAmount < prizeAmount || highestPrizeAmount == prizeAmount) {
-
-							// if greater than current top prize, check if winners are available
-							HashMap<Integer, Integer> prizesToAvailabities = ticket.getPrizesToAvailabilities();
-
-							// if at least one is available, set as the new top prize
-							if (prizesToAvailabities.get(prizeAmount) > 0) {
-								topPrizedTickets.add(ticket);
-							}
-						}
-					}
-
-		
-		
-		
-		
-		
-		
-		return allScratchOffTickets;
-	}
-	
+	/*
+	 * public List<LotteryTicket>
+	 * findHighestAmountOfWinnersAvailable(List<LotteryTicket> allScratchOffTickets,
+	 * int amountToEvaluate) { List<LotteryTicket> highestAmountOfWinnersAvailable =
+	 * new ArrayList<>(); Integer highestWinnersAmount = 0;
+	 * 
+	 * 
+	 * // iterate through all tickets for (LotteryTicket ticket :
+	 * allScratchOffTickets) {
+	 * 
+	 * // For each ticket, find total available winners Integer availableForTicket =
+	 * ticket.getSumOfAvailableWinners();
+	 * 
+	 * // evaluate if total available are greater than current top prize
+	 * 
+	 * 
+	 * }
+	 * 
+	 * return allScratchOffTickets; }
+	 */
 	
 	// Most possible winners
 
